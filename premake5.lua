@@ -17,6 +17,9 @@ project "Hazel"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "hzpch.h"
+	pchsource "Hazel/src/hzpch.cpp"
+
 	-- **.h 表示 从该文件类型递归搜索文件夹
 	files{
 		"%{prj.name}/src/**.h",  

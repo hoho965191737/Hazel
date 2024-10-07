@@ -2,11 +2,7 @@
 
 #include "Hazel/Core.h"
 
-#include <string>
-#include <functional>
-
 // This is event main file!
-
 namespace Hazel {
 
 	// Events in Hazel are currently blocking(means it's not buffered), meaning when an event occurs it
