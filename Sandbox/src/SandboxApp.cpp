@@ -1,5 +1,6 @@
 #include <Hazel.h>
 
+
 class ExampleLayer : public Hazel::Layer
 {
 public:
