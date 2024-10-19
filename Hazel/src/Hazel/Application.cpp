@@ -1,6 +1,5 @@
 #include "hzpch.h"
 #include "Application.h"
-
 #include <glad/glad.h>
 
 namespace Hazel {
