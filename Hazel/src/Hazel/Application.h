@@ -27,14 +27,16 @@ namespace Hazel {
 		inline static Application& Get() { return *s_Instance; }
 
 	private:
-		std::unique_ptr<Window> m_Window;
-		bool m_Running = true;
-
 		bool OnWindowClose(WindowCloseEvent& e);
-		LayerStack m_LayerStack;
+
+		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running = true;
+		LayerStack m_LayerStack;
+		
 		static Application* s_Instance;
 
+		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 	};
 
 	// to be defined in client
