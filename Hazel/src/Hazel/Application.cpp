@@ -1,6 +1,8 @@
 #include "hzpch.h"
 #include "Application.h"
 #include <glad/glad.h>
+#include "Hazel/Renderer/Buffer.h"
+
 
 namespace Hazel {
 
@@ -22,9 +24,6 @@ namespace Hazel {
 		glGenVertexArrays(1, &m_VertexArray);	// gen调用只会分配唯一ID，并不会在opengl中创建对象
 		glBindVertexArray(m_VertexArray);		// 它实际被创建当我们进行第一次绑定
 		
-		// vertex buffer
-		glGenBuffers(1, &m_VertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);	// GL_ARRAY_BUFFER 是一种缓冲类型
 
 		float vertices[3 * 3] = {	// 我们要把这串数据从CPU传到GPU
 			-0.5f, -0.5f, 0.0f,
@@ -32,18 +31,17 @@ namespace Hazel {
 			0.0f, 0.5f, 0.0f,
 		};
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
 		// index buffer / element buffer  一样的东西，叫法不同
 		//     (作用是告诉vertex buffer以什么样的顺序来绘制这些顶点)
-		glGenBuffers(1, &m_IndexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
+		uint32_t indices[3] = { 0, 1, 2 };
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		unsigned int indices[3] = { 0,1,2 };
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		// shader  gpu存在默认的shader，所以这里没有创建shader也没关系
 		std::string vertexSrc = R"(
@@ -57,11 +55,12 @@ namespace Hazel {
 				gl_Position = vec4(a_Position, 1.0);	
 			}
 		)";
+		// 这里通过相同的变量名v_Position，进行匹配
 		std::string fragmentSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
-			in vec3 v_Position;
+			in vec3 v_Position;	
 			void main()
 			{
 				color = vec4(v_Position * 0.5 + 0.5, 1.0);
@@ -105,13 +104,13 @@ namespace Hazel {
 	void Application::Run() {
 
 		while (m_Running) {
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
+			glClearColor(0.1f, 0.1f, 0.1f, 1);	// 颜色值需要在0到1之间
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			m_Shader->Bind();	// 在创建顶点缓冲区之前先创建一个着色器，因为layout必须对应，但是opengl不强制，只要在之前bind就行
 
 			glBindVertexArray(m_VertexArray);
-			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

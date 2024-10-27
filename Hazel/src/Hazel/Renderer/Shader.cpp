@@ -68,7 +68,6 @@ namespace Hazel {
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
 		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-		isLinked = 1;
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
