@@ -3,6 +3,20 @@
 
 
 namespace Hazel {
-	// 这样处理是 为了方便运行时进行处理
-	RendererAPI Renderer::s_RendererAPI = RendererAPI::OpenGL;
+
+	void Renderer::BeginScene()
+	{
+	}
+
+
+	void Renderer::EndScene()
+	{
+	}
+
+
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
+	{
+		vertexArray->Bind();
+		RenderCommand::DrawIndexed(vertexArray);
+	}
 }
