@@ -31,7 +31,7 @@ namespace Hazel {
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ViewProjectionMatrix;
-		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f }; // 需要初始化，不然opengl并不会初始化任何东西
 		float m_Rotation = 0.0f;
 	};
 
