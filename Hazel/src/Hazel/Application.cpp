@@ -11,7 +11,7 @@ namespace Hazel {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application() : m_Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
@@ -70,6 +70,8 @@ namespace Hazel {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 			out vec4 v_Color;
 
@@ -77,7 +79,7 @@ namespace Hazel {
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0);	
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);		
 			}
 		)";
 		// 这里通过相同的变量名v_Position，进行匹配
@@ -101,11 +103,15 @@ namespace Hazel {
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+			
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
+
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);	
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
 			}
 		)";
 		std::string blueShaderFragmentSrc = R"(
@@ -154,11 +160,13 @@ namespace Hazel {
 			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 			RenderCommand::Clear();
 
-			m_BlueShader->Bind();
-			Renderer::Submit(m_SquareVA);
+			m_Camera.SetPosition({ 0.5f, 0.5f, 0.0f });
+			//m_Camera.SetRotation(45.0f);
 
-			m_Shader->Bind();	// 在创建顶点缓冲区之前先创建一个着色器，因为layout必须对应，但是opengl不强制，只要在之前bind就行
-			Renderer::Submit(m_VertexArray);
+			Renderer::BeginScene(m_Camera);
+
+			Renderer::Submit(m_BlueShader, m_SquareVA);
+			Renderer::Submit(m_Shader, m_VertexArray);
 
 			Renderer::EndScene();
 
