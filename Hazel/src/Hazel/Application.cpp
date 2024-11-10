@@ -1,6 +1,8 @@
 #include "hzpch.h"
 #include "Application.h"
 
+#include <glfw/glfw3.h>
+
 #include "Hazel/Renderer/Renderer.h"
 #include "Hazel/Renderer/Buffer.h"
 
@@ -17,6 +19,7 @@ namespace Hazel {
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetVSync(false); // 这里设置为false，能看到真实帧速率
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -53,10 +56,12 @@ namespace Hazel {
 	void Application::Run() {
 
 		while (m_Running) {
-			
+			float time = (float)glfwGetTime();  // Platform::GetTime;这里和glfw进行耦合了
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
