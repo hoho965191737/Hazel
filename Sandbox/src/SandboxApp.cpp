@@ -37,24 +37,27 @@ public:
 
 		m_SquareVA.reset(Hazel::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,	// (左下) 后面两个坐标值属于纹理坐标
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,	// (右下) r(1.0) g(0.0) b(0.0)
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // (右上) r(1.0) g(1.0) b(0.0)
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, // (左上) r(0.0) g(1.0) b(0.0)
 		};
 		Hazel::Ref<Hazel::VertexBuffer> squareVB;
 		squareVB.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout({
-			{ Hazel::ShaderDataType::Float3, "a_Position" }
+			{ Hazel::ShaderDataType::Float3, "a_Position" },
+			{ Hazel::ShaderDataType::Float2, "a_TexCoord" },
 			});
 		m_SquareVA->AddVertexBuffer(squareVB);
+		
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		Hazel::Ref<Hazel::IndexBuffer> squareIB;
 		squareIB.reset(Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		// shader  gpu存在默认的shader，所以这里没有创建shader也没关系
+		// 图形1.
 		std::string vertexSrc = R"(
 			#version 330 core
 			
@@ -91,6 +94,7 @@ public:
 
 		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
 
+		// 图形2.
 		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
 			
@@ -121,7 +125,45 @@ public:
 		)";
 		m_flatColorShader.reset(Hazel::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
 
+		// 图形3.
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+			
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+			}
+		)";
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+		m_TextureShader.reset(Hazel::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+
+		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
+
 	void OnUpdate(Hazel::Timestep ts) override
 	{
 		HZ_TRACE("Delta Time: {0}s, {1}ms", ts.GetSeconds(), ts.GetMilliseconds());
@@ -167,7 +209,11 @@ public:
 			}
 		}
 
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		m_Texture->Bind();
+		Hazel::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+		// 三角形
+		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);		
 
 		Hazel::Renderer::EndScene();
 	}
@@ -190,8 +236,10 @@ public:
 private:
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
-	Hazel::Ref<Hazel::Shader> m_flatColorShader;
+	Hazel::Ref<Hazel::Shader> m_flatColorShader, m_TextureShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
