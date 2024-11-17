@@ -4,5 +4,8 @@ bin/
 bin-int/
 
 
+
 # Files
 *.user
+Sandbox/assets/textures/text*.jpg
+Sandbox/assets/textures/text*.png

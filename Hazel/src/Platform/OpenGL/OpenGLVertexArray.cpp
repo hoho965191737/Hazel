@@ -66,7 +66,7 @@ namespace Hazel {
 				ShaderDataTypeToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
-				(const void*)element.Offset);
+				(const void*)(intptr_t)element.Offset);
 			index++;
 		}
 		m_VertexBuffers.push_back(vertexBuffer);	// index buffer只与顶点的数量有关，所以它不关心该顶点有多少个 attr
