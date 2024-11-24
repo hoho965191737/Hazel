@@ -12,7 +12,7 @@ namespace Hazel {
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
-		HZ_TRACE("Delta Time: {0}s, {1}ms", ts.GetSeconds(), ts.GetMilliseconds());
+		//HZ_TRACE("Delta Time: {0}s, {1}ms", ts.GetSeconds(), ts.GetMilliseconds());
 		if (Input::IsKeyPressed(HZ_KEY_A))
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
 		else if (Input::IsKeyPressed(HZ_KEY_D))
