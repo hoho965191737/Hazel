@@ -77,8 +77,9 @@ namespace Hazel {
 		}
 	}
 
-	void ImGuiLayer::OnImGuiRender() {
+	// 不展示debug界面
+	/*void ImGuiLayer::OnImGuiRender() {
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
-	}
+	}*/
 }
