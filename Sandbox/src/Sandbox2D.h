@@ -14,14 +14,6 @@ public:
 private:
 	Hazel::OrthographicCameraController m_CameraController;
 
-	struct ProfileResult
-	{
-		const char* Name;
-		float Time;
-	};
-
-	std::vector<ProfileResult> m_ProfileResults;
-
 	// Temp ÔÝÊ±µÄ
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 	Hazel::Ref<Hazel::Shader> m_FlatColorShader;
