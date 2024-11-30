@@ -9,8 +9,14 @@ namespace Hazel {
 
 	void Renderer::Init()
 	{
+		HZ_PROFILE_FUNCTION();
 		RenderCommand::Init();
 		Renderer2D::Init();
+	}
+
+	void Renderer::Shutdown()
+	{
+		Renderer2D::Shutdown();
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
