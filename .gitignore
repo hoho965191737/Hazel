@@ -2,10 +2,11 @@
 .vs/
 bin/
 bin-int/
-Sandbox/log/
+
 
 
 # Files
 *.user
 Sandbox/assets/textures/text*.jpg
 Sandbox/assets/textures/text*.png
+Sandbox/log/*.json
