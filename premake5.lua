@@ -31,7 +31,7 @@ project "Hazel"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
-	
+	characterset ("Unicode")
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -102,7 +102,7 @@ project "Sandbox"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
-	
+	characterset ("Unicode")
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
