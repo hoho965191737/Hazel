@@ -9,6 +9,15 @@
 
 namespace Hazel {
 
+	struct OrthographicCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	// OrthographicCamera 的包装器
 	class OrthographicCameraController
 	{
@@ -20,6 +29,7 @@ namespace Hazel {
 		void OnEvent(Event& e);
 		OrthographicCamera& GetCamera() { return m_Camera; }
 		const OrthographicCamera& GetCamera() const { return m_Camera; }
+		const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
 		float GetZoomLevel() const { return m_ZoomLevel; }
 		void SetZoomLevel(float level) { m_ZoomLevel = level; }
 
@@ -30,6 +40,7 @@ namespace Hazel {
 	private:
 		float m_AspectRatio;		// 纵横比
 		float m_ZoomLevel = 1.0f;	// 实际缩放等级
+		OrthographicCameraBounds m_Bounds;	// 这里要注意 bound 和 camera的初始化顺序；不然会出现第一帧黑屏情况
 		OrthographicCamera m_Camera;
 		bool m_Rotation;
 		glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
