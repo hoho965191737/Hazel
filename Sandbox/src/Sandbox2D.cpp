@@ -70,6 +70,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 		Hazel::Renderer2D::EndScene();
 	}
 #endif // 0
+
 	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
 		auto [x, y] = Hazel::Input::GetMousePosition();
