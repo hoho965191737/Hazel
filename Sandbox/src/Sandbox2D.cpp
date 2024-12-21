@@ -3,6 +3,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+static const uint32_t s_MapWidth = 24;
+static const char* s_MapTiles =	// 我们是从上往下读，opengl是从下往上读
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWDDDDDDWWWWWWWWW"
+"WWWWWWDDDDDDDDDDDDWWWWWW"
+"WWWWDDDWWWWWWWWWWDDDDWWW"
+"WWWWWWDDDDWWWWWWWDDDWWWW"
+"WWWWWWDDWWWWWWWDDWWWWWWW"
+"WWWWDWWWWWWWDDWWWWWcWWWW"
+"WWWDDWDDDDDDDDDWWWWWWWWW"
+"WWWDDDDDDDDDDDDDDDWWWWWW"
+"WWWWWWWDDDDDWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+;
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f)
@@ -14,10 +31,15 @@ void Sandbox2D::OnAttach()
 	HZ_PROFILE_FUNCTION();
 	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
-	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
-	m_TextureBarrel = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 8, 2 }, { 128, 128 });
+	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 0, 11 }, { 128, 128 });
+	m_TextureBarrel = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 1, 11 }, { 128, 128 });
 	m_TextureTree = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2, 1 }, { 128, 128 }, { 1, 2 });
 	
+	m_MapWidth = s_MapWidth;
+	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
+	s_TextureMap['D'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 6, 11 }, { 128, 128 });
+	s_TextureMap['W'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {11, 11}, {128, 128});
+
 	// 初始化粒子系统
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -26,6 +48,8 @@ void Sandbox2D::OnAttach()
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
 	m_Particle.Position = { 0.0f, 0.0f };
+
+	m_CameraController.SetZoomLevel(10.0f);
 }
 void Sandbox2D::OnDetach()
 {
@@ -93,9 +117,24 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	// 精灵表 测试
 	{
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_TextureStairs);
-		Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_TextureBarrel);
-		Hazel::Renderer2D::DrawQuad({ -1.0f, 1.0f, 0.0f }, { 1.0f, 2.0f }, m_TextureTree);
+		
+		for (uint32_t y = 0; y < m_MapHeight; y++) {	// 这样遍历缓存行命中率更高
+			for (uint32_t x = 0; x < m_MapWidth; x++) {
+				char tileType = s_MapTiles[x + y + s_MapWidth];
+				Hazel::Ref<Hazel::SubTexture2D> texture;
+				if (s_TextureMap.find(tileType) != s_TextureMap.end())
+					texture = s_TextureMap[tileType];
+				else
+					texture = m_TextureBarrel;
+				HZ_TRACE("memory add:{0}", (uint32_t)&texture);
+				Hazel::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, m_MapHeight - y - m_MapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
+			}
+		}
+
+		//Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_TextureStairs);
+		//Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_TextureBarrel);
+		//Hazel::Renderer2D::DrawQuad({ -1.0f, 1.0f, 0.0f }, { 1.0f, 2.0f }, m_TextureTree);
+		
 		Hazel::Renderer2D::EndScene();
 	}
 
