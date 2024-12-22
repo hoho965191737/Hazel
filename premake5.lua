@@ -111,14 +111,14 @@ project "Sandbox"
 		"%{prj.name}/src/**.cpp",
 	}
 
-	includedirs{
+	includedirs{	-- 这里保证Sandbox项目内部能够使用，需要暴露链接
 		"%{wks.location}/Hazel/vendor/spdlog/include",
 		"%{wks.location}/Hazel/src",
 		"Hazel/vendor",
 		"%{IncludeDir.glm}",
 	}
 
-	links{
+	links{		-- 这里只需要链接Hazel，因为Hazel内部已经链接其他东西
 		"Hazel"
 	}
 
@@ -143,4 +143,49 @@ project "Sandbox"
 		defines "HZ_DIST"
 		runtime "Release"
 		optimize "on"
+
+project "Hazel-Editor"
+	location "Hazel-Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+	buildoptions { "/utf-8", }
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+	includedirs
+	{
+		"Hazel/vendor/spdlog/include",
+		"Hazel/src",
+		"Hazel/vendor",
+		"%{IncludeDir.glm}"
+	}
+	links
+	{
+		"Hazel"
+	}
+	filter "system:windows"
+		systemversion "latest"
+
+		defines{
+			"HZ_PLATFORM_WINDOWS",
+		}
 		
+	filter "configurations:Debug"
+		defines "HZ_DEBUG"
+		runtime "Debug"
+		symbols "on"
+	filter "configurations:Release"
+		defines "HZ_RELEASE"
+		runtime "Release"
+		optimize "on"
+	filter "configurations:Dist"
+		defines "HZ_DIST"
+		runtime "Release"
+		optimize "on"
