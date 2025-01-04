@@ -20,7 +20,7 @@ namespace Hazel {
 		Ref<Framebuffer> m_Framebuffer;
 
 		Ref<Scene> m_ActiveScene;
-		entt::entity m_SquareEntity;
+		Entity m_SquareEntity;
 
 		Ref<Texture2D> m_CheckerboardTexture;
 		glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
