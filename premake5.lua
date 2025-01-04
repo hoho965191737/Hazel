@@ -1,6 +1,6 @@
 workspace "Hazel"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "Hazel-Editor"
 	configurations{
 		"Debug",
 		"Release",
@@ -123,6 +123,7 @@ project "Sandbox"
 		"%{wks.location}/Hazel/src",
 		"Hazel/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 		
 	}
 

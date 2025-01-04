@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "Hazel/Renderer/Camera.h"
 
 namespace Hazel {
 	struct TagComponent
@@ -32,4 +33,15 @@ namespace Hazel {
 			: Color(color) {}
 	};
 
+
+	struct CameraComponent
+	{
+		Hazel::Camera Camera;
+		bool Primary = true;	// 是否是主相机，todo: 考虑移动到场景
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4 & projection)
+			: Camera(projection) {}
+	};
 }
