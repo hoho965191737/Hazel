@@ -79,7 +79,6 @@ namespace Hazel {
 		}
 
 		if (mainCamera) {
-			HZ_CORE_TRACE("jkhdsfkj1");
 			Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
@@ -89,14 +88,6 @@ namespace Hazel {
 			}
 			Renderer2D::EndScene();
 		}
-
-		/*auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
-		{
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::DrawQuad(transform, sprite.Color);
-		}
-		Renderer2D::EndScene();*/
 		
 	}
 
