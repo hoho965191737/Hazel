@@ -36,6 +36,8 @@ namespace Hazel {
 		{
 		public:
 			void OnCreate() {
+				auto& transform = GetComponent<TransformComponent>().Transform;
+				transform[3][0] = rand() % 10 - 5.0f;
 			}
 
 			void OnDestroy() {
@@ -58,7 +60,7 @@ namespace Hazel {
 			}
 		};
 
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 	void EditorLayer::OnDetach()
 	{
