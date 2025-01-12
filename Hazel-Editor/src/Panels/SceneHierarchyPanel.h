@@ -16,6 +16,7 @@ namespace Hazel {
 
 	private:
 		void DrawEntityNode(Entity entity);
+		void DrawComponents(Entity entity);
 	
 	private:
 		Ref<Scene> m_Context;	// 场景作为上下文
