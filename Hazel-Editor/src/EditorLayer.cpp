@@ -171,7 +171,7 @@ namespace Hazel {
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 
-		if (m_SquareEntity) {
+	/*	if (m_SquareEntity) {
 			ImGui::Separator();
 			ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
 
@@ -193,7 +193,7 @@ namespace Hazel {
 				if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
 					camera.SetOrthographicSize(orthoSize);
 			}
-		}
+		}*/
 
 		ImGui::End();
 
