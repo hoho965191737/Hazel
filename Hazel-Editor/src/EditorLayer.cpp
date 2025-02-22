@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Hazel/Scene/SceneSerializer.h"
 namespace Hazel {
 
 	EditorLayer::EditorLayer()
@@ -65,6 +66,7 @@ namespace Hazel {
 
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
 	}
 
 	void EditorLayer::OnDetach()
@@ -161,6 +163,19 @@ namespace Hazel {
 				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
 				// which we can't undo at the moment without finer window depth/z control.
 				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+
+				if (ImGui::MenuItem("Serialize"))
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Serialize("assets/scenes/Example.hazel");
+				}
+
+				if (ImGui::MenuItem("Deserialize"))
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Deserialize("assets/scenes/Example.hazel");
+				}
+
 				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
 			}

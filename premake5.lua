@@ -14,7 +14,7 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories relative to root folder (solution directory)
+-- Include directories 相对于根文件夹的目录（解决方案目录）
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
@@ -22,12 +22,13 @@ IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 IncludeDir["glm"] = "Hazel/vendor/glm"
 IncludeDir["stb_image"] = "Hazel/vendor/stb_image"
 IncludeDir["entt"] = "Hazel/vendor/entt/include"
-
+IncludeDir["yaml_cpp"] = "%{wks.location}/Hazel/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Hazel/vendor/GLFW"
 	include "Hazel/vendor/Glad"
 	include "Hazel/vendor/imgui"
+	include "Hazel/vendor/yaml-cpp"
 group ""
 
 
@@ -68,13 +69,15 @@ project "Hazel"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links{
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"yaml-cpp",
 		"opengl32.lib",
 	}
 
