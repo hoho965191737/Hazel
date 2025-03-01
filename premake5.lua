@@ -58,8 +58,9 @@ project "Hazel"
 
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"	--是否使用安全版本--
-	}
+		"_CRT_SECURE_NO_WARNINGS",	--是否使用安全版本--
+		"YAML_CPP_STATIC_DEFINE"
+		}
 
 	includedirs{
 		"%{wks.location}/Hazel/src",
