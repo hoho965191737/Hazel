@@ -16,6 +16,9 @@ namespace Hazel {
 	void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene)
 	{
 		m_Context = scene;
+		// 因为new场景的时候，删除了旧场景，但是上下文依然指向旧的场景，这里要重置；
+		// 但是这里如果有多个标签，可能想切换选择场景中的最后一个
+		m_SelectionContext = {}; 
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender()
